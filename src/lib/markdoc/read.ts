@@ -2,9 +2,9 @@ import type { z } from "zod";
 import path from "path";
 import matter from "gray-matter";
 import fs from "fs/promises";
-import { globby } from "globby";
 import Markdoc from "@markdoc/markdoc";
 import { config } from "./markdoc.config";
+import fg from 'fast-glob';
 
 // path is relative to where you run the `yarn build` command
 const contentDirectory = path.normalize("./content");
@@ -96,7 +96,7 @@ export async function readAll<T extends z.ZodTypeAny>({
   frontmatterSchema: T;
 }) {
   const pathToDir = path.posix.join(contentDirectory, directory);
-  const paths = await globby(`${pathToDir}/*.md`);
+  const paths = await fg.glob(`${pathToDir}/*.md`);
 
   return Promise.all(paths.map((path) => read({ filepath: path, schema })));
 }
